@@ -1,0 +1,8 @@
+/bin/
+/target/
+/jars/
+/servers/
+.classpath
+.project
+/config.json
+/.settings/
