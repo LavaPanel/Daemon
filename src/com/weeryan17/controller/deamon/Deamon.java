@@ -2,8 +2,6 @@ package com.weeryan17.controller.deamon;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 
 import org.apache.ftpserver.ftplet.FtpException;
@@ -18,6 +16,8 @@ import com.weeryan17.controller.deamon.util.FtpManager;
 import com.weeryan17.controller.deamon.util.GeneralUtil;
 import com.weeryan17.controller.deamon.util.Logging;
 import com.weeryan17.controller.deamon.util.ServerHandler;
+import com.weeryan17.controller.deamon.util.config.ConfigManager;
+import com.weeryan17.controller.deamon.util.config.ConfigManager.ConfigMissingElementsException;
 import com.weeryan17.controller.deamon.util.redis.RedisController;
 
 import io.github.binaryoverload.JSONConfig;
@@ -60,38 +60,21 @@ public class Deamon {
 			if (!file.exists() && !file.createNewFile())
 				throw new IllegalStateException("Can't create config file!");
 			try {
-				config = new JSONConfig("config.json");
+				ConfigManager man = new ConfigManager();
+				man.addRequirement("server.address", "user", "pass", "ftp.port", "ftp.pass", "redis.server.address");
+				man.load("config.json");
+				config = man.getConfig();
 			} catch (NullPointerException e) {
 				logger.log("Invalid Config Json!", Level.SEVERE, e);
 				System.exit(1);
+				return;
+			} catch (ConfigMissingElementsException e) {
+				logger.log("Missing required element(s) '" + GeneralUtil.listToString(e.getMissing()) + "'", Level.SEVERE);
+				System.exit(1);
+				return;
 			}
 		} catch (IOException e) {
 			logger.log("Chould load config file!", Level.SEVERE, e);
-			System.exit(1);
-		}
-
-		List<String> required = new ArrayList<>();
-		required.add("server.address");
-		required.add("user");
-		required.add("pass");
-		required.add("ftp.port");
-		required.add("ftp.pass");
-		required.add("redis.server.address");
-
-		List<String> missing = new ArrayList<>();
-
-		for (String req : required) {
-			if (config.getElement(req) != null) {
-				if (!config.getElement(req).isPresent()) {
-					missing.add(req);
-				}
-			} else {
-				missing.add(req);
-			}
-		}
-
-		if (missing.size() > 0) {
-			logger.log("Missing required element(s) '" + GeneralUtil.listToString(missing) + "'", Level.SEVERE);
 			System.exit(1);
 		}
 		
