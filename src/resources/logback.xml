@@ -1,0 +1,14 @@
+<configuration>
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+
+		<filter class="tk.weeryan17.controller.damon.listeners.LogListener" />
+		<encoder>
+			<pattern>
+				%-4relative [%thread] %-5level %logger - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+	<root level="DEBUG">
+		<appender-ref ref="STDOUT" />
+	</root>
+</configuration>
