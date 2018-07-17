@@ -42,7 +42,7 @@ public class Web {
 					responce.type("application/json");
 					Server server = utils.getServer(request.params(":id"));
 					if (server == null) {
-						return utils.badRequestMessage(WebUtils.WebBadResponceType.INVALID_SERVER);
+						return utils.badRequestMessage(WebUtils.WebBadResponceType.INVALID_SERVER, request.ip());
 					}
 					return instance.getGson().toJson(server.getInfo());
 				});
@@ -51,7 +51,7 @@ public class Web {
 						responce.type("application/json");
 						Server server = utils.getServer(request.params(":id"));
 						if (server == null) {
-							return utils.badRequestMessage(WebUtils.WebBadResponceType.INVALID_SERVER);
+							return utils.badRequestMessage(WebUtils.WebBadResponceType.INVALID_SERVER, request.ip());
 						}
 						return instance.getGson().toJson(server.getInfo().getMessages());
 					});
@@ -60,28 +60,28 @@ public class Web {
 					responce.type("application/json");
 					Server server = utils.getServer(request.params(":id"));
 					if (server == null) {
-						return utils.badRequestMessage(WebUtils.WebBadResponceType.INVALID_SERVER);
+						return utils.badRequestMessage(WebUtils.WebBadResponceType.INVALID_SERVER, request.ip());
 					}
 					if (request.contentType() != null && request.contentType().equals("application/json")) {
 						JsonElement rawJson = parser.parse(request.body());
 						if (!rawJson.isJsonObject()) {
-							return utils.badRequestMessage(WebUtils.WebBadResponceType.BAD_JSON);
+							return utils.badRequestMessage(WebUtils.WebBadResponceType.BAD_JSON, request.ip());
 						} else {
 							JsonObject json = rawJson.getAsJsonObject();
 							if (!(json.has("command") || json.has("args"))) {
-								return utils.badRequestMessage(WebUtils.WebBadResponceType.INVALID_JSON);
+								return utils.badRequestMessage(WebUtils.WebBadResponceType.INVALID_JSON, request.ip());
 							}
 							JsonElement rawArgs = json.get("args");
 							JsonElement rawCommand = json.get("command");
 							if (!utils.isString(rawCommand) || !rawArgs.isJsonArray()) {
-								return utils.badRequestMessage(WebUtils.WebBadResponceType.INVALID_JSON);
+								return utils.badRequestMessage(WebUtils.WebBadResponceType.INVALID_JSON, request.ip());
 							}
 							String command = rawCommand.getAsJsonPrimitive().getAsString();
 							JsonArray jsonArgs = rawArgs.getAsJsonArray();
 							List<String> args = new ArrayList<>();
 							for (JsonElement jsonArg : jsonArgs) {
 								if (!utils.isString(jsonArg)) {
-									return utils.badRequestMessage(WebUtils.WebBadResponceType.INVALID_JSON);
+									return utils.badRequestMessage(WebUtils.WebBadResponceType.INVALID_JSON, request.ip());
 								}
 								args.add(jsonArg.getAsString());
 							}
@@ -91,23 +91,23 @@ public class Web {
 							return instance.getGson().toJson(responceJson);
 						}
 					} else {
-						return utils.badRequestMessage(WebUtils.WebBadResponceType.INVALID_TYPE);
+						return utils.badRequestMessage(WebUtils.WebBadResponceType.INVALID_TYPE, request.ip());
 					}
 				});
 				post("/stop", (request, responce) -> {
 					responce.type("application/json");
 					Server server = utils.getServer(request.params(":id"));
 					if (server == null) {
-						return utils.badRequestMessage(WebUtils.WebBadResponceType.INVALID_SERVER);
+						return utils.badRequestMessage(WebUtils.WebBadResponceType.INVALID_SERVER, request.ip());
 					}
 					if (request.contentType() != null && request.contentType().equals("application/json")) {
 						JsonElement rawJson = parser.parse(request.body());
 						if (!rawJson.isJsonObject()) {
-							return utils.badRequestMessage(WebUtils.WebBadResponceType.BAD_JSON);
+							return utils.badRequestMessage(WebUtils.WebBadResponceType.BAD_JSON, request.ip());
 						} else {
 							JsonObject json = rawJson.getAsJsonObject();
 							if (!json.has("message")) {
-								return utils.badRequestMessage(WebUtils.WebBadResponceType.INVALID_JSON);
+								return utils.badRequestMessage(WebUtils.WebBadResponceType.INVALID_JSON, request.ip());
 							}
 							String message = json.get("message").getAsString();
 							instance.getHander().stopServer(server, message);
@@ -116,26 +116,26 @@ public class Web {
 							return instance.getGson().toJson(responceJson);
 						}
 					} else {
-						return utils.badRequestMessage(WebUtils.WebBadResponceType.INVALID_TYPE);
+						return utils.badRequestMessage(WebUtils.WebBadResponceType.INVALID_TYPE, request.ip());
 					}
 				});
 				post("/edit", (request, responce) -> {
 					responce.type("application/json");
 					Server server = utils.getServer(request.params(":id"));
 					if (server == null) {
-						return utils.badRequestMessage(WebUtils.WebBadResponceType.INVALID_SERVER);
+						return utils.badRequestMessage(WebUtils.WebBadResponceType.INVALID_SERVER, request.ip());
 					}
 					if (request.contentType() != null && request.contentType().equals("application/json")) {
 						return "";
 					} else {
-						return utils.badRequestMessage(WebUtils.WebBadResponceType.INVALID_TYPE);
+						return utils.badRequestMessage(WebUtils.WebBadResponceType.INVALID_TYPE, request.ip());
 					}
 				});
 				get("/start", (request, responce) -> {
 					responce.type("application/json");
 					Server server = utils.getServer(request.params(":id"));
 					if (server == null) {
-						return utils.badRequestMessage(WebUtils.WebBadResponceType.INVALID_SERVER);
+						return utils.badRequestMessage(WebUtils.WebBadResponceType.INVALID_SERVER, request.ip());
 					}
 					instance.getHander().startServer(server);
 					JsonObject responceJson = new JsonObject();
@@ -186,6 +186,12 @@ public class Web {
 			bufferedReader.close();
 
 			return sb.toString();
+		});
+		
+		path("/versions", () -> {
+			get("/", (req, res) -> {
+				return "";
+			});
 		});
 
 		instance.getLogger().log("Spark started!");

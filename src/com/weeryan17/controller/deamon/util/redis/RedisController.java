@@ -27,7 +27,7 @@ public class RedisController {
 		} else {
 			port = 6379;
 		}
-		if (instance.getConfig().getString("redis.pass").get().isEmpty()) {
+		if (!instance.getConfig().getString("redis.pass").isPresent()) {
 			jedisPool = new JedisPool(new JedisPoolConfig(),
 					instance.getConfig().getString("redis.server.address").get(), port, 3000);
 		} else {

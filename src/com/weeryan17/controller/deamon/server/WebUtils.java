@@ -1,5 +1,7 @@
 package com.weeryan17.controller.deamon.server;
 
+import java.util.logging.Level;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -12,13 +14,16 @@ public class WebUtils {
 		this.instance = instance;
 	}
 	
-	public String badRequestMessage(WebUtils.WebBadResponceType type) {
+	public String badRequestMessage(WebUtils.WebBadResponceType type, String ip) {
 		JsonObject json = new JsonObject();
 		JsonObject request = new JsonObject();
 		json.addProperty("good", false);
 		request.addProperty("message", type.message);
 		request.addProperty("raw_type", type.name());
 		json.add("reply", request);
+		
+		instance.getLogger().log("Bot recived a bad request", Level.WARNING);
+		
 		return instance.getGson().toJson(json);
 	}
 	

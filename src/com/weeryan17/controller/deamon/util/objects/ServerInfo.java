@@ -8,30 +8,26 @@ import com.weeryan17.controller.deamon.Deamon;
 
 public class ServerInfo {
 	
-	transient Server server;
-	
-	int querryPort;
-	
-	int port;
+	private transient Server server;
 
-	transient ServerQuerry querry;
+	private transient ServerQuerry querry;
 	
-	int ramUsage;
+	private int ramUsage;
 	
-	int ramTotal;
+	private int ramTotal;
 	
-	double ramPercent;
+	private double ramPercent;
 	
-	String remoteAdd;
+	private double cpuUsage;
 	
-	int playersCurrent;
+	private String remoteAdd;
 	
-	int playersTotal;
+	private int playersCurrent;
+	
+	private int playersTotal;
 
 	public ServerInfo(Server server) {
 		this.server = server;
-		this.port = server.port;
-		this.querryPort = server.querryPort;
 	}
 	
 	public ServerQuerry getQuerry() {
@@ -110,5 +106,13 @@ public class ServerInfo {
 		querry.updateData();
 		this.playersTotal = querry.getMaxPlayers();
 		return playersTotal;
+	}
+
+	public double getCpuUsage() {
+		return cpuUsage;
+	}
+
+	public void setCpuUsage(double cpuUsage) {
+		this.cpuUsage = cpuUsage;
 	}
 }

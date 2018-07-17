@@ -55,8 +55,6 @@ public class ServerHandler {
 		builder.directory(serverLoc);
 		builder.redirectErrorStream(true);
 		final Process proc = builder.start();
-		ProcessHandle.Info handle = proc.toHandle().info();
-		//TODO CPU Usage
 		server.setRunning(true);
 		server.getInfo().makeQuerry();
 		server.getInfo().setRemoteAdd(instance.getRemoteAddress());
@@ -82,6 +80,8 @@ public class ServerHandler {
 						server.getInfo().setRamTotal(totalMB);
 						server.getInfo().setRamPercent(percent);
 						
+						server.getInfo().setCpuUsage(ProcessUtil.getCpuUsageSenceLastCheck(proc.pid(), proc.toHandle().info()));
+						
 						server.getInfo().updatePlayerCounts();
 					}
 					
@@ -101,6 +101,7 @@ public class ServerHandler {
 				timer.cancel();
 				server.setRunning(false);
 				server.setInfo(null);
+				ProcessUtil.stoped(proc.pid());
 				instance.getRedis().delete(String.valueOf(server.getId()));
 				instance.getLogger().log("Server " + server.getName() + " stoped");
 			}
