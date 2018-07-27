@@ -41,4 +41,23 @@ public class GeneralUtil {
 	            reader.close();
 	    }
 	}
+	
+	private static String githubBase = "https://github.com/LavaPanel/Daemon/tree/master/src/";
+	
+	public static String errorString(Throwable e) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(e.getMessage()).append('\n');
+		for(StackTraceElement elm : e.getStackTrace()) {
+			if(elm.getClassName().startsWith("com.weeryan17")) {
+				String classString = elm.getClassName();
+				String url = githubBase + classString.replaceAll("\\.", "/") + ".java#L" + elm.getLineNumber();
+				String link = "[" + elm.getClassName() + "." + elm.getMethodName() + ":" + elm.getLineNumber() + "](" + url + ")";
+				sb.append("\tat ").append(link).append("\n");
+			} else {
+				String error = elm.getClassName() + "." + elm.getMethodName() + ":" + elm.getLineNumber();
+				sb.append("\tat ").append(error).append("\n");
+			}
+		}
+		return sb.toString();
+	}
 }

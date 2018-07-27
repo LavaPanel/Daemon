@@ -46,7 +46,7 @@ public class Deamon {
 	}
 
 	public void init() {
-		logger = new Logging();
+		logger = new Logging(this);
 		gson = new GsonBuilder().setPrettyPrinting().create();
 		httpClient = new OkHttpClient();
 

@@ -23,8 +23,8 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.weeryan17.controller.deamon.Deamon;
-import com.weeryan17.controller.deamon.util.objects.Message;
 import com.weeryan17.controller.deamon.util.objects.Server;
+import com.weeryan17.controller.deamon.util.redis.Message;
 
 public class ServerHandler {
 	List<Server> servers = new ArrayList<>();

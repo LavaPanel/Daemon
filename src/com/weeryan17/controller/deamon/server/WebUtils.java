@@ -27,6 +27,13 @@ public class WebUtils {
 		return instance.getGson().toJson(json);
 	}
 	
+	public String error(Throwable e) {
+		JsonObject json = new JsonObject();
+		json.addProperty("good", false);
+		json.addProperty("error", e.toString());
+		return instance.getGson().toJson(json);
+	}
+	
 	public boolean isString(JsonElement element) {
 		if (!element.isJsonPrimitive()) {
 			return false;
@@ -52,7 +59,8 @@ public class WebUtils {
 		INVALID_TYPE("Inavlid content type!"),
 		BAD_JSON("Json syntax is bad!"),
 		INVALID_JSON("Json is invalid for this request!"),
-		INVALID_SERVER("The server id is invalid!");
+		INVALID_SERVER("The server id is invalid!"),
+		BAD_ACCESS("Eather you tried to accesss something before it was avaliable, or you're accessing something you shouldn't have access to.");
 		
 		String message;
 		

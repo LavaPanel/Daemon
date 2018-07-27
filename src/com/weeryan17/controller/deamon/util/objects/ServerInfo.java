@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.weeryan17.controller.deamon.Deamon;
+import com.weeryan17.controller.deamon.util.redis.Message;
 
 public class ServerInfo {
 	

@@ -1,4 +1,4 @@
-package com.weeryan17.controller.deamon.util.objects;
+package com.weeryan17.controller.deamon.util.redis;
 
 public class Message {
 	MessageLevel level;
